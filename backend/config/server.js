@@ -5,8 +5,9 @@ import { fileURLToPath } from "url";
 import { connectDB } from "./db.js";
 import dotenv from "dotenv";
 dotenv.config();
-import bookRoutes from "../routes/book-route.js"
+import bookRoutes from "../books/routes/book-route.js"
 import userRoutes from "../user/routes/user-route.js"
+import adminRoutes from "../admin/routes/admin-routes.js"
 
 // Fix for __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -30,5 +31,6 @@ app.get("/", (req, res) => {
 //app routes
 app.use("/api/book", bookRoutes)
 app.use("/api/user", userRoutes)
+app.use("/api/admin", adminRoutes)
 
 export default app;

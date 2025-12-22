@@ -1,14 +1,16 @@
-export const adminLogin = async (req, res)=>{
-    try {
+import { Book } from "../../books/models/book-model"
 
-        const {name, email, }
+export const getAllBooks = async(req, res)=>{
+    try {
+        const book = await Book.find()
+
         
+
     } catch (error) {
         return res.status(500).json({
             success:false,
             message:"Internal server error",
             error:error.message
         })
-        
     }
 }

@@ -4,7 +4,9 @@ import { Book } from "../models/book-model.js"
 import mongoose from "mongoose"
 
 export const addBook = async (req, res)=>{
+    
     try {
+        
         const {title, author, publishYear, price, description, category, stock}=req.body
         const uploadedFile = req.files;
         let mediaIds = []
@@ -25,6 +27,12 @@ export const addBook = async (req, res)=>{
 
         mediaIds = uploads;
     }
+        if(req.user.role !== "SubAdmin"){
+            return res.status(403).json({
+                success:false,
+                message:"Only Sub admin allow to add book"
+            })
+        }
 
 
         const newBook =  new Book({
@@ -35,7 +43,9 @@ export const addBook = async (req, res)=>{
             description,
             category,
             stock,
-            image:mediaIds
+            image:mediaIds,
+            ownerId:req.user.id
+
 
         })
         await newBook.save()

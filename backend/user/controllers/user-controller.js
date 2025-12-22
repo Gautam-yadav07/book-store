@@ -4,42 +4,53 @@ import bcrypt from "bcrypt"
 
 
 
-export const createUser= async(req, res)=>{
+export const createUser = async (req, res) => {
     try {
-        const {name, email, password, role,address, mobile} = req.body;
-        if(!name || !email || !password || !mobile){
+        const { name, email, password, address, mobile } = req.body;
+
+        if (!name || !email || !password || !mobile) {
             return res.status(400).json({
-                success:false,
-                message:"All the fields are required"
-            })
+                success: false,
+                message: "All required fields must be filled"
+            });
         }
-        const existing = await User.findOne({email, mobile})
-        if(existing){
+
+        const existing = await User.findOne({
+            $or: [{ email }, { mobile }]
+        });
+
+        if (existing) {
             return res.status(400).json({
-                success:false,
-                message:"User Already exist"
-            })
+                success: false,
+                message: "User already exists"
+            });
         }
-        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
-            name,email, password:hashedPassword, role, address, mobile
-        })
+            name,
+            email,
+            password: hashedPassword,
+            role: req.body.role || 'user', // default user
+            address,
+            mobile
+        });
+
         return res.status(201).json({
-            success:true,
-            message:"User created succesfully",
-            data:newUser
-        })
-        
+            success: true,
+            message: "User created successfully",
+            data: newUser
+        });
+
     } catch (error) {
         return res.status(500).json({
-            success:false,
-            message:"Internal server error",
-            error:error.message
-        })
-        
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
     }
-}
+};
 
 
 export const userLogin = async (req, res)=>{

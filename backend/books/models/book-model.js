@@ -35,6 +35,9 @@ const bookSchema = mongoose.Schema({
         type:Number,
         default:0
     },
+    ownerId:{
+        type:mongoose.Schema.Types.ObjectId, ref:"User"
+    }
 
 },{timestamps:true})
 
